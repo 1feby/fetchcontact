@@ -9,7 +9,8 @@ import UIKit
 import Contacts
 class ViewController: UIViewController {
     var fetcontacts : [CONTACTS] = []
-    var contactstr : [String] = []
+    var contactdic : [String] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -32,11 +33,10 @@ class ViewController: UIViewController {
      print("failed")
      }
      }*/
-   var filterdItemsArray = [String]()
-    func filterContentForSearchText(searchText: String) {
-        filterdItemsArray = contactstr.filter { item in
-            
-            return item.lowercased().contains(searchText.lowercased())
+    var filterdItemsArray = [CONTACTS]()
+    func filterContentForSearchText(searchText: String)  {
+        filterdItemsArray = fetcontacts.filter { item in
+            return item.fullname.lowercased().contains(searchText.lowercased())
         }
     }
     let fileURL = "/Users/phoebeezzat/Desktop/test.txt"
@@ -45,12 +45,16 @@ class ViewController: UIViewController {
         do {
             // Read file content
             let contents = try NSString(contentsOfFile: fileURL, encoding: String.Encoding.utf8.rawValue)
-           let texttoread = contents as String
+            let texttoread = contents as String
             arrayOfStrings = texttoread.components(separatedBy: " ");
             //print("bb \(arrayOfStrings.count)")
             filterContentForSearchText(searchText: arrayOfStrings[1])
             for p in 0...filterdItemsArray.count{
                 print(filterdItemsArray.count)
+            }
+            if filterdItemsArray.count == 2 {
+                print(filterdItemsArray[0].fullname)
+                print(filterdItemsArray[0].number)
             }
             
             print(" the text is \(contents)")
@@ -60,18 +64,18 @@ class ViewController: UIViewController {
         }
         
         /*var filtered = fetcontacts.filter {$0.firstName == text}
-        print(filtered.count)
-        for p in 0...filtered.count{
-            print(filtered[p].number)
-        }*/
+         print(filtered.count)
+         for p in 0...filtered.count{
+         print(filtered[p].number)
+         }*/
         
         /*   if let foo = fetcontacts.enumerated().first(where: {$0.element.firstName == "John"}) {
-            // do something with foo.offset and foo.element
-            print(fetcontacts[foo.offset].number)
-        } else {
-            // item could not be found
-            print("couldn't found")
-        }*/
+         // do something with foo.offset and foo.element
+         print(fetcontacts[foo.offset].number)
+         } else {
+         // item could not be found
+         print("couldn't found")
+         }*/
         
     }
     func fetchcontacts() -> [CONTACTS]{
@@ -81,9 +85,10 @@ class ViewController: UIViewController {
         let fetchreq = CNContactFetchRequest.init(keysToFetch: keys as! [CNKeyDescriptor] )
         do{
             try ContactStore.enumerateContacts(with: fetchreq) { (contact, end) in
-               let datacontant = CONTACTS(NAME: "\(contact.givenName) \(contact.familyName)", phoneNumber: contact.phoneNumbers.first?.value.stringValue ?? "")
+                let datacontant = CONTACTS(NAME: "\(contact.givenName) \(contact.familyName)", phoneNumber: contact.phoneNumbers.first?.value.stringValue ?? "")
                 self.fetcontacts.append(datacontant)
-                self.contactstr.append(datacontant.fullname)
+            //    let dict = [ datacontant.fullname: datacontant.number]
+            //    self.contactdic.append(dict)
                 print(contact.givenName)
                 print(contact.phoneNumbers.first?.value.stringValue ?? "")
             }}
