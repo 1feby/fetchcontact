@@ -22,23 +22,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         let arraycontacts = fetchcontacts()
         print(arraycontacts.count)
     }
-    /*func saveContactToDocument(contact : [CNContact]){
-     let documentpath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-     let fileUrl = URL.init(fileURLWithPath: documentpath.appending("/MYcontacts.vcf"))
-     let data : NSData?
-     do{
-     try data = CNContactVCardSerialization.data(with: contact) as NSData
-     do{
-     try data?.write(to: fileUrl, options: [.atomicWrite])
-     print(fileUrl.absoluteString)
-     }catch{
-     print("failed to write")
-     }
-     }catch{
-     print("failed")
-     }
-     }*/
-   
+ 
     func filterContentForSearchText(searchText: String)  {
         filterdItemsArray = fetcontacts.filter { item in
             return item.fullname.lowercased().contains(searchText.lowercased())
@@ -98,6 +82,8 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print(filterdItemsArray[indexPath.row].number)
+        let url : NSURL = URL(string: "telprompt://\(filterdItemsArray[indexPath.row].number)")! as NSURL
+        UIApplication.shared.open(url as URL, options: [:], completionHandler: nil)
     }
 }
 
